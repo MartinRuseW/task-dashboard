@@ -1,5 +1,21 @@
-# Vue 3 + Vite
+# Task Dashboard
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Dashboard built with:
+- Vue 3 (Composition API)
+- Vite
+- Pinia
+- Vue Router
+- TailwindCSS
+- mockapi.io (mock REST API)
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Setup
+
+```bash
+npm install
+npm run dev
+```
+
+## How to use the API method
+
+1. Go to `taskStore.js`, comment the code from the begging to `line 60`, and uncomment the whole script after `line 60`;
+2. Go to `DashboardView.vue` and uncomment the onMounted on `line 144`

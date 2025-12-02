@@ -1,30 +1,28 @@
 <template>
   <section>
-    <div
-      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
-    >
+    <div v-if="taskStore.loading" class="flex items-center gap-2 mb-4 text-sm text-gray-600">
+      <div class="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+      Loading tasks...
+    </div>
+
+    <div v-if="taskStore.error" class="mb-4 text-sm text-red-500">
+      {{ taskStore.error }}
+    </div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <h2 class="text-2xl font-semibold">Tasks</h2>
 
-      <button
-        class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
-        @click="showModal = true"
-      >
+      <button class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
+        @click="showModal = true">
         + Add Task
       </button>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 mb-4">
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search by title and description..."
-        class="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input v-model="searchQuery" type="text" placeholder="Search by title and description..."
+        class="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-      <select
-        v-model="statusFilter"
-        class="px-3 py-2 border rounded-lg text-sm w-full sm:w-52 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
+      <select v-model="statusFilter"
+        class="px-3 py-2 border rounded-lg text-sm w-full sm:w-52 focus:outline-none focus:ring-2 focus:ring-blue-500">
         <option value="All">All</option>
         <option value="To Do">To Do</option>
         <option value="In Progress">In Progress</option>
@@ -34,9 +32,7 @@
 
     <div class="bg-white shadow rounded-lg overflow-hidden">
       <table class="min-w-full text-sm">
-        <thead
-          class="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500"
-        >
+        <thead class="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
           <tr>
             <th class="px-4 py-3">Title</th>
             <th class="px-4 py-3">Description</th>
@@ -46,12 +42,8 @@
         </thead>
 
         <tbody>
-          <tr
-            v-for="task in filteredTasks"
-            :key="task.id"
-            class="border-t hover:bg-gray-50 cursor-pointer"
-            @click="openTaskDetails(task.id)"
-          >
+          <tr v-for="task in filteredTasks" :key="task.id" class="border-t hover:bg-gray-50 cursor-pointer"
+            @click="openTaskDetails(task.id)">
             <td class="px-4 py-2 font-medium">
               {{ task.title }}
             </td>
@@ -66,26 +58,20 @@
                   <span v-if="(task.description || '').length > 50">...</span>
                 </span>
 
-                <button
-                  v-if="(task.description || '').length > 50"
-                  class="self-start text-xs text-blue-600 hover:underline"
-                  @click.stop="toggleDescription(task.id)"
-                >
+                <button v-if="(task.description || '').length > 50"
+                  class="self-start text-xs text-blue-600 hover:underline" @click.stop="toggleDescription(task.id)">
                   {{ isExpanded(task.id) ? "Show less" : "Read more" }}
                 </button>
               </div>
             </td>
 
             <td class="px-4 py-2">
-              <span
-                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-                :class="{
-                  'bg-gray-100 text-gray-700': task.status === 'To Do',
-                  'bg-yellow-100 text-yellow-700':
-                    task.status === 'In Progress',
-                  'bg-green-100 text-green-700': task.status === 'Done',
-                }"
-              >
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" :class="{
+                'bg-gray-100 text-gray-700': task.status === 'To Do',
+                'bg-yellow-100 text-yellow-700':
+                  task.status === 'In Progress',
+                'bg-green-100 text-green-700': task.status === 'Done',
+              }">
                 {{ task.status }}
               </span>
             </td>
@@ -97,7 +83,7 @@
 
           <tr v-if="filteredTasks.length === 0">
             <td class="px-4 py-6 text-center text-gray-500" colspan="4">
-                No tasks found.
+              No tasks found.
             </td>
           </tr>
         </tbody>
@@ -108,10 +94,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useTaskStore } from "../stores/taskStore";
-import TaskModal from "../components/TaskModal.vue";
+import { ref, computed, onMounted } from 'vue'
+import TaskModal from '../components/TaskModal.vue'
 
 const taskStore = useTaskStore();
 const router = useRouter();
@@ -138,7 +124,7 @@ const isExpanded = (id) => {
 
 const filteredTasks = computed(() => {
   const query = searchQuery.value.toLowerCase();
-  
+
   return taskStore.tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(query) ||
@@ -146,7 +132,7 @@ const filteredTasks = computed(() => {
 
     const matchesStatus =
       statusFilter.value === "All" || task.status === statusFilter.value;
-      
+
     return matchesSearch && matchesStatus;
   });
 });
@@ -154,4 +140,9 @@ const filteredTasks = computed(() => {
 const openTaskDetails = (id) => {
   router.push({ name: "task-details", params: { id } });
 };
+
+// for API method
+// onMounted(() => {
+//   taskStore.fetchTasks()
+// })
 </script>

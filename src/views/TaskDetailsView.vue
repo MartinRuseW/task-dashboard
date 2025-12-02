@@ -68,9 +68,4 @@ const task = computed(() =>
 const goBack = () => {
     router.push({ name: 'dashboard' })
 }
-
-// TODO: тук ще отваряме модала за редакция
-const onEditClick = () => {
-    console.log('Edit Task modal – coming soon ✏️')
-}
 </script>
