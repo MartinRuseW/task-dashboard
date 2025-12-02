@@ -39,6 +39,7 @@
         <label class="text-sm font-medium">Due Date</label>
         <input
           v-model="dueDate"
+          :min="today"
           type="date"
           class="w-full px-3 py-2 border rounded-lg"
         />
@@ -86,6 +87,7 @@ const status = ref('To Do')
 const dueDate = ref('')
 
 const error = ref('')
+const today = new Date().toISOString().split('T')[0]
 
 watch(
   () => props.show,
@@ -111,6 +113,11 @@ watch(
 const saveTask = () => {
   if (!title.value.trim()) {
     error.value = 'Title is required.'
+    return
+  }
+
+  if (dueDate.value && dueDate.value < Date.now()) {
+    error.value = 'Due date cannot be in the past.'
     return
   }
 
